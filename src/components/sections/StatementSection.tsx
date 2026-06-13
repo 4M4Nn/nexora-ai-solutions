@@ -4,78 +4,58 @@ import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const LINE1 = "Your competitors are already using AI.";
-const LINE2 = "Are you still doing it manually?";
-
-function splitWords(text: string) {
-  return text.split(" ");
-}
+const LINES = [
+  "Your competitors are already using AI.",
+  "Every day you wait,",
+  "they get further ahead.",
+  "Nexora closes that gap.",
+  "In days. Not months.",
+];
 
 export default function StatementSection() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      const words = gsap.utils.toArray<HTMLSpanElement>(".stmt-word");
-
-      gsap.fromTo(
-        words,
-        { opacity: 0.1 },
+      const words = gsap.utils.toArray<HTMLSpanElement>(".stmt-w");
+      gsap.fromTo(words,
+        { opacity: 0.08 },
         {
           opacity: 1,
-          stagger: { each: 0.1, ease: "none" },
+          stagger: { each: 0.08, ease: "none" },
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            end: "center 40%",
-            scrub: 1.5,
+            trigger: ref.current,
+            start: "top 80%",
+            end: "center 30%",
+            scrub: 1.2,
           },
         }
       );
-    }, sectionRef);
-
+    }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="min-h-screen flex flex-col items-center justify-center bg-black px-6 py-32"
-    >
-      <div className="max-w-5xl w-full text-center">
-        <p
-          className="font-bold leading-tight mb-6"
-          style={{
-            fontFamily: "var(--font-space-grotesk), sans-serif",
-            fontSize: "clamp(32px, 5.5vw, 80px)",
-          }}
-        >
-          {splitWords(LINE1).map((word, i) => (
-            <span key={i} className="stmt-word inline-block mr-[0.22em] opacity-10">
-              {word}
-            </span>
-          ))}
-        </p>
-
-        <p
-          className="font-bold leading-tight"
-          style={{
-            fontFamily: "var(--font-space-grotesk), sans-serif",
-            fontSize: "clamp(32px, 5.5vw, 80px)",
-          }}
-        >
-          {splitWords(LINE2).map((word, i) => (
-            <span key={i} className="stmt-word inline-block mr-[0.22em] opacity-10">
-              {word}
-            </span>
-          ))}
-        </p>
-
-        <p className="mt-14 text-xs text-[#00D4FF] tracking-[0.25em] uppercase">
-          The Cost of Waiting Is Real
-        </p>
+    <section ref={ref} className="min-h-screen flex items-center justify-center bg-black px-6 py-28">
+      <div className="max-w-5xl w-full">
+        {LINES.map((line, li) => (
+          <p
+            key={li}
+            className="font-bold leading-tight mb-3 md:mb-4"
+            style={{
+              fontFamily: "var(--font-space-grotesk), sans-serif",
+              fontSize: "clamp(28px, 5vw, 72px)",
+              ...(li >= 3 ? { color: "#00D4FF" } : {}),
+            }}
+          >
+            {line.split(" ").map((word, wi) => (
+              <span key={wi} className="stmt-w inline-block mr-[0.22em] opacity-[0.08]">
+                {word}
+              </span>
+            ))}
+          </p>
+        ))}
       </div>
     </section>
   );

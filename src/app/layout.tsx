@@ -20,28 +20,22 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default:
-      "Nexora AI Solutions — AI Employees for Modern Businesses | Kochi, Kerala",
+    default: "Nexora AI Solutions — AI Employees for Modern Businesses | Kochi, Kerala",
     template: "%s | Nexora AI Solutions",
   },
   description:
-    "Nexora AI Solutions builds AI-powered automation systems, custom AI agents, AI websites, lead nurturing, SEO automation, and enterprise AI solutions for businesses in Kerala and India.",
+    "Kerala's leading AI automation company. We build AI agents for websites, lead nurturing, SEO, sales, recruitment and customer support. Get your AI employee in 24 hours.",
   keywords: [
     "AI Agency Kerala",
-    "AI Development Company Kerala",
-    "AI Agents for Business",
-    "AI Automation Services",
-    "Custom AI Agents",
-    "Website Development Kerala",
-    "Lead Nurturing Automation",
-    "WhatsApp AI Agent",
-    "AI Solutions Company India",
-    "AI Agency Kochi",
-    "Business Automation Kerala",
-    "AI Customer Support",
     "AI Automation Kochi",
     "Custom AI Agents India",
     "AI Solutions Kerala",
+    "AI Development Company Kerala",
+    "WhatsApp AI Agent",
+    "Lead Nurturing AI",
+    "AI Sales Agent Kerala",
+    "AI Customer Support",
+    "Business Automation Kerala",
   ],
   authors: [{ name: "Nexora AI Solutions" }],
   creator: "Nexora AI Solutions",
@@ -54,33 +48,21 @@ export const metadata: Metadata = {
     siteName: "Nexora AI Solutions",
     title: "Nexora AI Solutions — AI Employees for Modern Businesses",
     description:
-      "Build, deploy, and scale AI-powered business automation with Nexora AI. Custom AI agents, websites, and intelligent systems for businesses across Kerala and India.",
+      "Kerala's leading AI automation company. Custom AI agents for websites, lead nurturing, SEO, sales, recruitment and customer support.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Nexora AI Solutions — AI Employees for Modern Businesses",
     description:
-      "AI automation, custom AI agents, and intelligent websites for businesses in Kerala and India.",
+      "Kerala's leading AI automation company. Build, deploy, and scale AI agents for your business.",
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true },
-  },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable}`}
-    >
-      <body
-        className="bg-black text-white min-h-screen flex flex-col antialiased"
-        style={{ fontFamily: "var(--font-inter), sans-serif" }}
-      >
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+      <body className="bg-black text-white min-h-screen flex flex-col antialiased">
         <LenisProvider>
           <SiteShell>
             <Navbar />

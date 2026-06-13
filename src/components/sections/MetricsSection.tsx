@@ -6,83 +6,53 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { metrics } from "@/lib/data";
 
 export default function MetricsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const valueRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const ref = useRef<HTMLElement>(null);
+  const valRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      metrics.forEach((metric, i) => {
-        const el = valueRefs.current[i];
-        if (!el || metric.value === null) return;
-
-        const num = metric.value;
-        const suffix = metric.suffix;
+      metrics.forEach((m, i) => {
+        const el = valRefs.current[i];
+        if (!el || m.value === null) return;
         const obj = { val: 0 };
-
         gsap.to(obj, {
-          val: num,
+          val: m.value,
           duration: 2.2,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            once: true,
-          },
-          onUpdate: () => {
-            if (el) el.textContent = Math.round(obj.val) + suffix;
-          },
-          onComplete: () => {
-            if (el) el.textContent = metric.display;
-          },
+          scrollTrigger: { trigger: ref.current, start: "top 80%", once: true },
+          onUpdate: () => { if (el) el.textContent = Math.round(obj.val) + m.suffix; },
+          onComplete: () => { if (el) el.textContent = m.display; },
         });
       });
-    }, sectionRef);
-
+    }, ref);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-black">
-      <div className="border-t border-white/10" />
-
+    <section ref={ref} className="bg-black">
+      <div className="border-t border-white/8 max-w-7xl mx-auto" />
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div className="grid grid-cols-2 lg:grid-cols-4">
-          {metrics.map((metric, i) => (
+          {metrics.map((m, i) => (
             <div
-              key={metric.label}
-              className="py-16 px-6 md:px-10 text-center"
-              style={{
-                borderRight:
-                  i < metrics.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-              }}
+              key={m.label}
+              className="py-16 text-center"
+              style={{ borderRight: i < metrics.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
             >
               <p
                 className="font-bold text-white leading-none mb-3"
-                style={{
-                  fontFamily: "var(--font-space-grotesk), sans-serif",
-                  fontSize: "clamp(36px, 5vw, 64px)",
-                }}
+                style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontSize: "clamp(44px, 6vw, 80px)" }}
               >
-                <span
-                  ref={(el) => { valueRefs.current[i] = el; }}
-                >
-                  {metric.display}
-                </span>
+                <span ref={(el) => { valRefs.current[i] = el; }}>{m.display}</span>
               </p>
-              <p className="text-white/35 text-xs tracking-wider uppercase">
-                {metric.label}
-              </p>
-              <p className="text-white/25 text-xs tracking-wider uppercase">
-                {metric.sublabel}
-              </p>
+              <p className="text-white/30 text-xs tracking-widest uppercase">{m.label}</p>
+              <p className="text-white/20 text-xs tracking-widest uppercase">{m.sublabel}</p>
             </div>
           ))}
         </div>
       </div>
-
-      <div className="border-b border-white/10" />
+      <div className="border-b border-white/8 max-w-7xl mx-auto" />
     </section>
   );
 }

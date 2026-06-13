@@ -3,15 +3,17 @@
 @theme {
   --font-heading: var(--font-space-grotesk), sans-serif;
   --font-body: var(--font-inter), sans-serif;
-  --color-cyan: #00d4ff;
-  --color-black: #000000;
 }
 
 :root {
   --cyan: #00d4ff;
+  --green: #00ffb2;
+  --purple: #6e44ff;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -27,9 +29,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  font-family: var(--font-inter), sans-serif;
 }
 
-/* Hide default cursor on desktop */
+/* Custom cursor — hide default on desktop */
 @media (hover: hover) and (pointer: fine) {
   *,
   *::before,
@@ -38,95 +41,56 @@ body {
   }
 }
 
-/* Ticker animation */
+/* ── Ticker ── */
 @keyframes ticker {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 .ticker-track {
   display: flex;
   width: max-content;
-  animation: ticker 30s linear infinite;
+  animation: ticker 36s linear infinite;
+  will-change: transform;
 }
 
-.ticker-track:hover {
-  animation-play-state: paused;
-}
+.ticker-track:hover { animation-play-state: paused; }
 
-/* Marquee animations for industries */
+/* ── Marquee ── */
 @keyframes marquee-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-
 @keyframes marquee-right {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
 }
 
 .marquee-left {
   display: flex;
   width: max-content;
-  animation: marquee-left 25s linear infinite;
+  animation: marquee-left 28s linear infinite;
 }
-
 .marquee-right {
   display: flex;
   width: max-content;
-  animation: marquee-right 25s linear infinite;
+  animation: marquee-right 28s linear infinite;
 }
-
 .marquee-left:hover,
-.marquee-right:hover {
-  animation-play-state: paused;
-}
+.marquee-right:hover { animation-play-state: paused; }
 
-/* Grain overlay */
+/* ── Grain overlay ── */
 @keyframes grain {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-5%, -5%);
-  }
-  20% {
-    transform: translate(-10%, 5%);
-  }
-  30% {
-    transform: translate(5%, -10%);
-  }
-  40% {
-    transform: translate(-5%, 15%);
-  }
-  50% {
-    transform: translate(-10%, 5%);
-  }
-  60% {
-    transform: translate(15%, 0);
-  }
-  70% {
-    transform: translate(0, 10%);
-  }
-  80% {
-    transform: translate(-15%, 0);
-  }
-  90% {
-    transform: translate(10%, 5%);
-  }
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -5%); }
+  20% { transform: translate(-10%, 5%); }
+  30% { transform: translate(5%, -10%); }
+  40% { transform: translate(-5%, 15%); }
+  50% { transform: translate(-10%, 5%); }
+  60% { transform: translate(15%, 0); }
+  70% { transform: translate(0, 10%); }
+  80% { transform: translate(-15%, 0); }
+  90% { transform: translate(10%, 5%); }
 }
 
 .grain-overlay::after {
@@ -135,35 +99,34 @@ body {
   inset: -50%;
   width: 200%;
   height: 200%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 200px 200px;
-  opacity: 0.06;
+  opacity: 0.05;
   animation: grain 0.8s steps(10) infinite;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
+/* ── Holographic grid ── */
+.holo-grid {
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
 
-::-webkit-scrollbar-track {
-  background: #000;
-}
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
 
-::-webkit-scrollbar-thumb {
-  background: #222;
-  border-radius: 2px;
-}
+/* ── Selection ── */
+::selection { background: rgba(0, 212, 255, 0.18); color: #fff; }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #333;
+/* ── Glow pulse animation for 3D loading fallback ── */
+@keyframes spin-ring {
+  to { transform: rotate(360deg); }
 }
-
-/* Selection */
-::selection {
-  background: rgba(0, 212, 255, 0.2);
-  color: #ffffff;
-}
+.spin-ring { animation: spin-ring 1s linear infinite; }

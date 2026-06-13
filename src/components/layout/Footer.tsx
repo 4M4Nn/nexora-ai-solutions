@@ -27,84 +27,48 @@ function WhatsAppSVG() {
 
 export default function Footer() {
   const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-white/10 px-6 md:px-10 py-10">
-      {/* Top row */}
+    <footer className="border-t border-white/8 px-6 md:px-10 py-10 bg-black">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
-        <span
-          className="font-bold text-lg tracking-widest text-white"
-          style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
-        >
-          NEXORA
-        </span>
+        <div>
+          <span
+            className="font-bold text-lg tracking-[0.2em] text-white block mb-1"
+            style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
+          >
+            NEXORA
+          </span>
+          <p className="text-white/25 text-xs">{siteConfig.tagline}</p>
+        </div>
 
-        <nav className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-white/40 hover:text-white transition-colors"
-            >
-              {link.label}
+        <nav className="flex flex-wrap justify-center gap-6 md:gap-8">
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="text-xs text-white/35 hover:text-white transition-colors tracking-wide">
+              {l.label}
             </Link>
           ))}
-          <Link
-            href="#how-it-works"
-            className="text-sm text-white/40 hover:text-white transition-colors"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm text-white/40 hover:text-white transition-colors"
-          >
-            Contact
-          </Link>
+          <Link href="#contact" className="text-xs text-white/35 hover:text-white transition-colors tracking-wide">Contact</Link>
         </nav>
 
         <div className="flex items-center gap-4">
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className="text-white/40 hover:text-white transition-colors"
-          >
-            <LinkedInSVG />
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="text-white/40 hover:text-white transition-colors"
-          >
-            <InstagramSVG />
-          </a>
-          <a
-            href={`https://wa.me/${siteConfig.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="text-white/40 hover:text-white transition-colors"
-          >
-            <WhatsAppSVG />
-          </a>
+          {[
+            { href: "https://linkedin.com", label: "LinkedIn", Icon: LinkedInSVG },
+            { href: "https://instagram.com", label: "Instagram", Icon: InstagramSVG },
+            { href: `https://wa.me/${siteConfig.whatsapp}`, label: "WhatsApp", Icon: WhatsAppSVG },
+          ].map(({ href, label, Icon }) => (
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+              className="text-white/30 hover:text-white transition-colors">
+              <Icon />
+            </a>
+          ))}
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="max-w-7xl mx-auto h-px bg-white/10 mb-6" />
+      <div className="max-w-7xl mx-auto h-px bg-white/8 mb-6" />
 
-      {/* Bottom row */}
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p className="text-white/30 text-xs">
-          &copy; {year} Nexora AI Solutions. All rights reserved.
-        </p>
-        <p className="text-white/30 text-xs">
-          Built by{" "}
-          <span className="text-white/50">Loopgen Technologies</span>
+        <p className="text-white/25 text-xs">&copy; {year} Nexora AI Solutions. All rights reserved.</p>
+        <p className="text-white/25 text-xs">
+          Built by <span className="text-white/40">Loopgen Technologies</span>
         </p>
       </div>
     </footer>

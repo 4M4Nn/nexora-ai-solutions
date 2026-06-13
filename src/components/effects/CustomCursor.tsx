@@ -8,40 +8,35 @@ export default function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
+  const isHoveringRef = useRef(false);
 
-  const dotX = useSpring(cursorX, { stiffness: 700, damping: 40 });
-  const dotY = useSpring(cursorY, { stiffness: 700, damping: 40 });
-  const ringX = useSpring(cursorX, { stiffness: 130, damping: 22 });
-  const ringY = useSpring(cursorY, { stiffness: 130, damping: 22 });
-
-  const isHovering = useRef(false);
+  const dotX = useSpring(cursorX, { stiffness: 800, damping: 40 });
+  const dotY = useSpring(cursorY, { stiffness: 800, damping: 40 });
+  const ringX = useSpring(cursorX, { stiffness: 120, damping: 20 });
+  const ringY = useSpring(cursorY, { stiffness: 120, damping: 20 });
 
   useEffect(() => {
     setMounted(true);
 
-    const move = (e: MouseEvent) => {
+    const onMove = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
     };
 
-    const over = (e: MouseEvent) => {
+    const onOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
-      const hoverable = t.closest("a, button, [data-cursor]");
-      if (hoverable && !isHovering.current) {
-        isHovering.current = true;
-        setHovering(true);
-      } else if (!hoverable && isHovering.current) {
-        isHovering.current = false;
-        setHovering(false);
+      const h = !!t.closest("a, button, [data-cursor]");
+      if (h !== isHoveringRef.current) {
+        isHoveringRef.current = h;
+        setHovering(h);
       }
     };
 
-    window.addEventListener("mousemove", move);
-    document.addEventListener("mouseover", over);
-
+    window.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseover", onOver);
     return () => {
-      window.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseover", over);
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover", onOver);
     };
   }, [cursorX, cursorY]);
 
@@ -49,36 +44,19 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Dot */}
       <motion.div
-        className="fixed top-0 left-0 z-[9998] rounded-full bg-white pointer-events-none"
-        style={{
-          x: dotX,
-          y: dotY,
-          width: 8,
-          height: 8,
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
+        className="fixed top-0 left-0 z-[9999] rounded-full bg-white pointer-events-none"
+        style={{ x: dotX, y: dotY, width: 6, height: 6, translateX: "-50%", translateY: "-50%" }}
       />
-
-      {/* Ring */}
       <motion.div
-        className="fixed top-0 left-0 z-[9997] rounded-full pointer-events-none border border-white/60"
+        className="fixed top-0 left-0 z-[9998] rounded-full pointer-events-none border border-white/50"
         animate={{
-          width: hovering ? 60 : 40,
-          height: hovering ? 60 : 40,
-          backgroundColor: hovering
-            ? "rgba(255,255,255,0.08)"
-            : "transparent",
+          width: hovering ? 60 : 44,
+          height: hovering ? 60 : 44,
+          backgroundColor: hovering ? "rgba(255,255,255,0.07)" : "transparent",
         }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        style={{
-          x: ringX,
-          y: ringY,
-          translateX: "-50%",
-          translateY: "-50%",
-        }}
+        transition={{ type: "spring", stiffness: 280, damping: 22 }}
+        style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
       />
     </>
   );

@@ -1,112 +1,109 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { workSteps } from "@/lib/data";
 
 export default function HowItWorksSection() {
-  const [active, setActive] = useState(0);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(headerRef, { once: true, margin: "-10% 0px" });
 
-  useEffect(() => {
-    const observers = itemRefs.current.map((ref, i) => {
-      if (!ref) return null;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(i);
-        },
-        { threshold: 0.5, rootMargin: "-30% 0px -30% 0px" }
-      );
-      obs.observe(ref);
-      return obs;
-    });
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-    return () => observers.forEach((obs) => obs?.disconnect());
-  }, []);
+  const xPct = useTransform(scrollYProgress, [0, 1], ["0%", `-${(workSteps.length - 1) * 100}%`]);
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const activeStep = useTransform(scrollYProgress, [0, 1], [0, workSteps.length - 1]);
 
   return (
-    <section id="how-it-works" className="bg-black">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-          {/* Left sticky */}
-          <div className="lg:sticky lg:top-0 h-auto lg:h-screen flex flex-col justify-center py-24 lg:py-0 pr-0 lg:pr-20 border-b lg:border-b-0 border-white/10">
-            <p className="text-xs text-white/30 tracking-[0.25em] uppercase mb-6">
-              Process
-            </p>
-            <h2
-              className="font-bold text-white leading-none"
-              style={{
-                fontFamily: "var(--font-space-grotesk), sans-serif",
-                fontSize: "clamp(44px, 6vw, 80px)",
-              }}
-            >
-              How it
-              <br />
-              works
-            </h2>
+    <section id="how-it-works">
+      {/* Header */}
+      <div ref={headerRef} className="bg-black px-6 md:px-10 py-20">
+        <div className="max-w-7xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            className="text-xs text-white/30 tracking-[0.28em] uppercase mb-4"
+          >
+            Process
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 28 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="font-bold text-white"
+            style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 1 }}
+          >
+            How it works.
+          </motion.h2>
+        </div>
+      </div>
 
-            {/* Step tracker */}
-            <div className="mt-12 hidden lg:flex items-center gap-3">
-              {workSteps.map((_, i) => (
+      {/* Horizontal scroll container */}
+      <div
+        ref={containerRef}
+        style={{ height: `${workSteps.length * 100}vh` }}
+        className="relative"
+      >
+        <div className="sticky top-0 h-screen overflow-hidden flex flex-col bg-black">
+          {/* Cards track */}
+          <div className="flex-1 flex items-center overflow-hidden">
+            <motion.div
+              className="flex"
+              style={{ x: xPct }}
+            >
+              {workSteps.map((step, i) => (
                 <div
-                  key={i}
-                  className="h-px transition-all duration-500"
-                  style={{
-                    width: active === i ? 32 : 16,
-                    backgroundColor:
-                      active === i
-                        ? "#00D4FF"
-                        : i < active
-                        ? "rgba(255,255,255,0.3)"
-                        : "rgba(255,255,255,0.1)",
-                  }}
-                />
+                  key={step.id}
+                  className="w-screen shrink-0 px-10 md:px-20 flex items-center"
+                >
+                  <div className="max-w-2xl">
+                    <span className="text-[100px] font-bold text-white/4 leading-none block mb-2"
+                      style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>
+                      {step.id}
+                    </span>
+                    <h3
+                      className="font-bold text-white mb-5"
+                      style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontSize: "clamp(28px, 4vw, 56px)", lineHeight: 1.05 }}
+                    >
+                      {step.title}
+                    </h3>
+                    <div className="w-16 h-px bg-[#00D4FF]/40 mb-6" />
+                    <p className="text-white/45 text-base md:text-lg leading-relaxed max-w-md">
+                      {step.description}
+                    </p>
+                    <div className="mt-10 flex items-center gap-2">
+                      {workSteps.map((_, j) => (
+                        <div
+                          key={j}
+                          className="h-px transition-all duration-300"
+                          style={{
+                            width: j === i ? 32 : 12,
+                            backgroundColor: j === i ? "#00D4FF" : j < i ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.1)",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right scrollable */}
-          <div className="border-l border-white/10">
-            {workSteps.map((step, i) => (
-              <div
-                key={step.id}
-                ref={(el) => { itemRefs.current[i] = el; }}
-                className="relative px-8 md:px-12 py-12 border-b border-white/10 transition-all duration-300"
-                style={{
-                  borderLeftColor:
-                    active === i ? "#00D4FF" : "transparent",
-                  borderLeftWidth: "2px",
-                }}
-              >
-                <span
-                  className="text-xs tracking-widest block mb-4 transition-colors duration-300"
-                  style={{ color: active === i ? "#00D4FF" : "rgba(255,255,255,0.2)" }}
-                >
-                  {step.id}
-                </span>
+          {/* Progress bar */}
+          <div className="h-px bg-white/8">
+            <motion.div className="h-full bg-[#00D4FF]" style={{ width: progressWidth }} />
+          </div>
 
-                <h3
-                  className="font-bold leading-none mb-4 transition-colors duration-300"
-                  style={{
-                    fontFamily: "var(--font-space-grotesk), sans-serif",
-                    fontSize: "clamp(24px, 3vw, 40px)",
-                    color: active === i ? "#ffffff" : "rgba(255,255,255,0.3)",
-                  }}
-                >
-                  {step.title}
-                </h3>
-
-                <p
-                  className="text-sm leading-relaxed transition-colors duration-300"
-                  style={{
-                    color: active === i
-                      ? "rgba(255,255,255,0.55)"
-                      : "rgba(255,255,255,0.18)",
-                  }}
-                >
-                  {step.description}
-                </p>
-              </div>
-            ))}
+          {/* Step counter */}
+          <div className="flex justify-between items-center px-10 md:px-20 py-5">
+            <span className="text-white/20 text-xs tracking-widest uppercase">How It Works</span>
+            <span className="text-white/30 text-xs font-mono">
+              {workSteps.map((s) => s.id).join(" · ")}
+            </span>
           </div>
         </div>
       </div>
