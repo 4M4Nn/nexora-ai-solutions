@@ -1,147 +1,112 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { Search, Brain, Code2, Rocket, BarChart3 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useRef, useState, useEffect } from "react";
 import { workSteps } from "@/lib/data";
 
-const ICONS: Record<number, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  1: Search, 2: Brain, 3: Code2, 4: Rocket, 5: BarChart3,
-};
-const COLORS = ["#00D4FF", "#6E44FF", "#00FFB2", "#00D4FF", "#6E44FF"];
-
 export default function HowItWorksSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
+  const [active, setActive] = useState(0);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    const observers = itemRefs.current.map((ref, i) => {
+      if (!ref) return null;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActive(i);
+        },
+        { threshold: 0.5, rootMargin: "-30% 0px -30% 0px" }
+      );
+      obs.observe(ref);
+      return obs;
+    });
 
-  const trackCount = workSteps.length - 1;
-  const x = useTransform(scrollYProgress, [0, 1], ["0vw", `-${trackCount * 100}vw`]);
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setActiveStep(Math.min(workSteps.length - 1, Math.round(v * trackCount)));
-  });
+    return () => observers.forEach((obs) => obs?.disconnect());
+  }, []);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative bg-[#050816]"
-      style={{ height: `${workSteps.length * 100}vh` }}
-    >
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="shrink-0 pt-16 pb-4 text-center px-4">
-          <Badge className="mb-3 bg-[#00FFB2]/10 text-[#00FFB2] border-[#00FFB2]/20">
-            How It Works
-          </Badge>
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white">
-            From Idea to{" "}
-            <span className="gradient-text-animated">AI in 5 Steps</span>
-          </h2>
+    <section id="how-it-works" className="bg-black">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          {/* Left sticky */}
+          <div className="lg:sticky lg:top-0 h-auto lg:h-screen flex flex-col justify-center py-24 lg:py-0 pr-0 lg:pr-20 border-b lg:border-b-0 border-white/10">
+            <p className="text-xs text-white/30 tracking-[0.25em] uppercase mb-6">
+              Process
+            </p>
+            <h2
+              className="font-bold text-white leading-none"
+              style={{
+                fontFamily: "var(--font-space-grotesk), sans-serif",
+                fontSize: "clamp(44px, 6vw, 80px)",
+              }}
+            >
+              How it
+              <br />
+              works
+            </h2>
 
-          {/* Step dots */}
-          <div className="flex items-center justify-center gap-2 mt-5">
-            {workSteps.map((_, i) => (
-              <div
-                key={i}
-                className="rounded-full transition-all duration-300"
-                style={{
-                  width: i === activeStep ? "24px" : "6px",
-                  height: "6px",
-                  backgroundColor: i === activeStep ? COLORS[i] : "rgba(255,255,255,0.2)",
-                  boxShadow: i === activeStep ? `0 0 8px ${COLORS[i]}` : "none",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Cards track */}
-        <motion.div style={{ x }} className="flex flex-1 will-change-transform">
-          {workSteps.map((step, i) => {
-            const Icon = ICONS[step.step] ?? Search;
-            const color = COLORS[i];
-            const isActive = activeStep === i;
-
-            return (
-              <div
-                key={step.step}
-                className="w-screen shrink-0 flex items-center justify-center px-4 sm:px-12 lg:px-24"
-              >
-                <motion.div
-                  animate={{
-                    opacity: isActive ? 1 : 0.4,
-                    scale: isActive ? 1 : 0.93,
-                  }}
-                  transition={{ duration: 0.45 }}
-                  className="max-w-2xl w-full glass rounded-3xl p-8 sm:p-12"
+            {/* Step tracker */}
+            <div className="mt-12 hidden lg:flex items-center gap-3">
+              {workSteps.map((_, i) => (
+                <div
+                  key={i}
+                  className="h-px transition-all duration-500"
                   style={{
-                    border: `1px solid ${isActive ? color + "40" : "rgba(255,255,255,0.04)"}`,
-                    boxShadow: isActive
-                      ? `0 0 60px ${color}12, 0 30px 80px rgba(0,0,0,0.4)`
-                      : "0 4px 24px rgba(0,0,0,0.3)",
+                    width: active === i ? 32 : 16,
+                    backgroundColor:
+                      active === i
+                        ? "#00D4FF"
+                        : i < active
+                        ? "rgba(255,255,255,0.3)"
+                        : "rgba(255,255,255,0.1)",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Right scrollable */}
+          <div className="border-l border-white/10">
+            {workSteps.map((step, i) => (
+              <div
+                key={step.id}
+                ref={(el) => { itemRefs.current[i] = el; }}
+                className="relative px-8 md:px-12 py-12 border-b border-white/10 transition-all duration-300"
+                style={{
+                  borderLeftColor:
+                    active === i ? "#00D4FF" : "transparent",
+                  borderLeftWidth: "2px",
+                }}
+              >
+                <span
+                  className="text-xs tracking-widest block mb-4 transition-colors duration-300"
+                  style={{ color: active === i ? "#00D4FF" : "rgba(255,255,255,0.2)" }}
+                >
+                  {step.id}
+                </span>
+
+                <h3
+                  className="font-bold leading-none mb-4 transition-colors duration-300"
+                  style={{
+                    fontFamily: "var(--font-space-grotesk), sans-serif",
+                    fontSize: "clamp(24px, 3vw, 40px)",
+                    color: active === i ? "#ffffff" : "rgba(255,255,255,0.3)",
                   }}
                 >
-                  <div className="flex items-center gap-5 mb-8">
-                    <div
-                      className="font-heading font-bold text-7xl sm:text-8xl leading-none tabular-nums"
-                      style={{ color: isActive ? color : "rgba(255,255,255,0.08)" }}
-                    >
-                      {String(step.step).padStart(2, "0")}
-                    </div>
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-                      style={{
-                        backgroundColor: `${color}18`,
-                        border: `1px solid ${color}35`,
-                        boxShadow: isActive ? `0 0 20px ${color}25` : "none",
-                      }}
-                    >
-                      <Icon className="w-7 h-7" style={{ color }} />
-                    </div>
-                  </div>
+                  {step.title}
+                </h3>
 
-                  <h3
-                    className="font-heading font-bold text-3xl sm:text-4xl mb-4"
-                    style={{ color: isActive ? "white" : "#B7C0D1" }}
-                  >
-                    {step.title}
-                  </h3>
-                  <p className="text-[#B7C0D1] text-lg leading-relaxed">{step.description}</p>
-
-                  {isActive && (
-                    <div className="mt-8 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: color }} />
-                      <span className="text-sm font-medium" style={{ color }}>
-                        Step {step.step} of {workSteps.length}
-                      </span>
-                    </div>
-                  )}
-                </motion.div>
+                <p
+                  className="text-sm leading-relaxed transition-colors duration-300"
+                  style={{
+                    color: active === i
+                      ? "rgba(255,255,255,0.55)"
+                      : "rgba(255,255,255,0.18)",
+                  }}
+                >
+                  {step.description}
+                </p>
               </div>
-            );
-          })}
-        </motion.div>
-
-        {/* Progress bar */}
-        <div className="shrink-0 px-8 pb-8">
-          <div className="max-w-2xl mx-auto">
-            <div className="h-px bg-white/8 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full rounded-full"
-                style={{
-                  width: progressWidth,
-                  background: "linear-gradient(90deg, #00D4FF, #6E44FF)",
-                  boxShadow: "0 0 10px rgba(0,212,255,0.6)",
-                }}
-              />
-            </div>
+            ))}
           </div>
         </div>
       </div>

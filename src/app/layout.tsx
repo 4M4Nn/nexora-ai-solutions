@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import LenisProvider from "@/components/effects/LenisProvider";
 import SiteShell from "@/components/effects/SiteShell";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -20,7 +20,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Nexora AI Solutions — AI Employees for Modern Businesses | Kochi, Kerala",
+    default:
+      "Nexora AI Solutions — AI Employees for Modern Businesses | Kochi, Kerala",
     template: "%s | Nexora AI Solutions",
   },
   description:
@@ -38,6 +39,9 @@ export const metadata: Metadata = {
     "AI Agency Kochi",
     "Business Automation Kerala",
     "AI Customer Support",
+    "AI Automation Kochi",
+    "Custom AI Agents India",
+    "AI Solutions Kerala",
   ],
   authors: [{ name: "Nexora AI Solutions" }],
   creator: "Nexora AI Solutions",
@@ -67,12 +71,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} dark`}>
-      <body className="bg-[#050816] text-white font-body min-h-screen flex flex-col antialiased">
+    <html
+      lang="en"
+      className={`${spaceGrotesk.variable} ${inter.variable}`}
+    >
+      <body
+        className="bg-black text-white min-h-screen flex flex-col antialiased"
+        style={{ fontFamily: "var(--font-inter), sans-serif" }}
+      >
         <LenisProvider>
           <SiteShell>
             <Navbar />

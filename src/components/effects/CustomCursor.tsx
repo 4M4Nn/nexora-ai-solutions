@@ -1,83 +1,85 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
-  const cursorX = useMotionValue(-200);
-  const cursorY = useMotionValue(-200);
+  const [mounted, setMounted] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
 
-  const dotX = useSpring(cursorX, { stiffness: 600, damping: 40 });
-  const dotY = useSpring(cursorY, { stiffness: 600, damping: 40 });
-  const ringX = useSpring(cursorX, { stiffness: 120, damping: 22 });
-  const ringY = useSpring(cursorY, { stiffness: 120, damping: 22 });
+  const dotX = useSpring(cursorX, { stiffness: 700, damping: 40 });
+  const dotY = useSpring(cursorY, { stiffness: 700, damping: 40 });
+  const ringX = useSpring(cursorX, { stiffness: 130, damping: 22 });
+  const ringY = useSpring(cursorY, { stiffness: 130, damping: 22 });
 
-  const ringRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
+  const isHovering = useRef(false);
 
   useEffect(() => {
+    setMounted(true);
+
     const move = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
     };
 
-    const enter = () => {
-      if (ringRef.current) {
-        ringRef.current.style.transform += " scale(1.8)";
-        ringRef.current.style.borderColor = "rgba(0,212,255,0.8)";
-      }
-    };
-    const leave = () => {
-      if (ringRef.current) {
-        ringRef.current.style.borderColor = "rgba(255,255,255,0.25)";
+    const over = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      const hoverable = t.closest("a, button, [data-cursor]");
+      if (hoverable && !isHovering.current) {
+        isHovering.current = true;
+        setHovering(true);
+      } else if (!hoverable && isHovering.current) {
+        isHovering.current = false;
+        setHovering(false);
       }
     };
 
     window.addEventListener("mousemove", move);
-
-    const hoverEls = document.querySelectorAll("a, button, [data-hover]");
-    hoverEls.forEach((el) => {
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
-    });
+    document.addEventListener("mouseover", over);
 
     return () => {
       window.removeEventListener("mousemove", move);
-      hoverEls.forEach((el) => {
-        el.removeEventListener("mouseenter", enter);
-        el.removeEventListener("mouseleave", leave);
-      });
+      document.removeEventListener("mouseover", over);
     };
   }, [cursorX, cursorY]);
 
+  if (!mounted) return null;
+
   return (
     <>
-      {/* Small dot */}
+      {/* Dot */}
       <motion.div
-        ref={dotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[99998]"
-        style={{ x: dotX, y: dotY }}
-      >
-        <div
-          className="w-2 h-2 rounded-full bg-[#00D4FF]"
-          style={{
-            transform: "translate(-50%, -50%)",
-            boxShadow: "0 0 6px #00D4FF",
-          }}
-        />
-      </motion.div>
+        className="fixed top-0 left-0 z-[9998] rounded-full bg-white pointer-events-none"
+        style={{
+          x: dotX,
+          y: dotY,
+          width: 8,
+          height: 8,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+      />
 
-      {/* Large ring */}
+      {/* Ring */}
       <motion.div
-        ref={ringRef}
-        className="fixed top-0 left-0 pointer-events-none z-[99997] transition-all duration-150"
-        style={{ x: ringX, y: ringY }}
-      >
-        <div
-          className="w-9 h-9 rounded-full border border-white/25"
-          style={{ transform: "translate(-50%, -50%)" }}
-        />
-      </motion.div>
+        className="fixed top-0 left-0 z-[9997] rounded-full pointer-events-none border border-white/60"
+        animate={{
+          width: hovering ? 60 : 40,
+          height: hovering ? 60 : 40,
+          backgroundColor: hovering
+            ? "rgba(255,255,255,0.08)"
+            : "transparent",
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        style={{
+          x: ringX,
+          y: ringY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+      />
     </>
   );
 }

@@ -1,149 +1,74 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, MessageCircle } from "lucide-react";
-import MagneticButton from "@/components/effects/MagneticButton";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { siteConfig } from "@/lib/data";
+
+function WhatsAppIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
 
 export default function CTASection() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  /* Animated gradient mesh background */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    let t = 0;
-    let animId: number;
-    const animate = () => {
-      t += 0.005;
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      // Shifting gradient orbs
-      const orbs = [
-        { x: w * 0.3 + Math.sin(t * 0.7) * w * 0.2, y: h * 0.5 + Math.cos(t * 0.5) * h * 0.3, r: 300, c: "rgba(0,212,255,0.07)" },
-        { x: w * 0.7 + Math.cos(t * 0.6) * w * 0.15, y: h * 0.5 + Math.sin(t * 0.4) * h * 0.25, r: 280, c: "rgba(110,68,255,0.08)" },
-        { x: w * 0.5 + Math.sin(t * 0.9) * w * 0.1,  y: h * 0.3 + Math.cos(t * 0.8) * h * 0.2,  r: 200, c: "rgba(0,255,178,0.04)" },
-      ];
-
-      orbs.forEach(({ x, y, r, c }) => {
-        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, c);
-        g.addColorStop(1, "transparent");
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fillStyle = g;
-        ctx.fill();
-      });
-
-      animId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
 
   return (
-    <section className="relative py-24 lg:py-36 bg-[#050816] overflow-hidden">
-      {/* Animated canvas background */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
-
-      {/* Grid overlay */}
-      <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-
-      {/* Floating dots */}
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1.5 h-1.5 rounded-full"
+    <section
+      ref={ref}
+      className="relative min-h-screen flex items-center justify-center bg-black px-6 py-24 overflow-hidden grain-overlay"
+    >
+      <div className="relative z-10 max-w-3xl w-full text-center">
+        <motion.h2
+          initial={{ opacity: 0, y: 48 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="font-bold text-white leading-none mb-8"
           style={{
-            left: `${10 + i * 12}%`,
-            top: `${20 + (i % 3) * 25}%`,
-            backgroundColor: ["#00D4FF", "#6E44FF", "#00FFB2"][i % 3],
-            opacity: 0.4,
-            boxShadow: `0 0 6px ${["#00D4FF", "#6E44FF", "#00FFB2"][i % 3]}`,
+            fontFamily: "var(--font-space-grotesk), sans-serif",
+            fontSize: "clamp(44px, 8vw, 100px)",
           }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.4, 0.8, 0.4],
-          }}
-          transition={{
-            duration: 3 + i * 0.4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.3,
-          }}
-        />
-      ))}
-
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
         >
-          <div
-            className="inline-block rounded-3xl px-10 py-14 sm:px-16 sm:py-20 glassmorphism"
-            style={{
-              border: "1px solid rgba(255,255,255,0.07)",
-              boxShadow: "0 0 80px rgba(0,212,255,0.07), 0 0 160px rgba(110,68,255,0.05)",
-            }}
+          Ready to build
+          <br />
+          your AI workforce?
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-white/40 text-base md:text-lg leading-relaxed mb-12"
+        >
+          Book a free 30-minute consultation.
+          <br />
+          No commitment. Just clarity.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <a
+            href="#contact"
+            className="px-8 py-4 bg-white text-black font-semibold text-sm tracking-wide hover:bg-white/90 transition-colors"
           >
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="w-2 h-2 bg-[#00FFB2] rounded-full animate-pulse" />
-              <span className="text-[#00FFB2] text-sm font-medium tracking-widest uppercase">
-                Start Today
-              </span>
-            </div>
-
-            <h2 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-white mb-6 leading-tight">
-              Ready to Build Your{" "}
-              <span className="gradient-text-animated">AI Workforce?</span>
-            </h2>
-
-            <p className="text-[#B7C0D1] text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-              Join businesses across India using Nexora AI to automate, scale, and dominate their market.
-              Your first consultation is completely free.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <MagneticButton>
-                <Link href="/contact">
-                  <button
-                    className="group flex items-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#6E44FF] text-white font-semibold text-base transition-all duration-300"
-                    style={{ boxShadow: "0 0 40px rgba(0,212,255,0.4)" }}
-                  >
-                    Book Free Consultation
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </Link>
-              </MagneticButton>
-
-              <MagneticButton>
-                <a href="https://wa.me/918891129111" target="_blank" rel="noopener noreferrer">
-                  <button className="flex items-center gap-2.5 px-8 py-4 rounded-xl border border-[#25D366]/40 bg-[#25D366]/5 text-[#25D366] font-semibold text-base hover:bg-[#25D366]/10 transition-all duration-300">
-                    <MessageCircle className="w-5 h-5" />
-                    WhatsApp Us Now
-                  </button>
-                </a>
-              </MagneticButton>
-            </div>
-          </div>
+            Book Free Consultation
+          </a>
+          <a
+            href={`https://wa.me/${siteConfig.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-8 py-4 border border-white/30 text-white font-semibold text-sm tracking-wide hover:bg-white/5 transition-colors flex items-center justify-center gap-2.5"
+          >
+            <WhatsAppIcon />
+            WhatsApp Us
+          </a>
         </motion.div>
       </div>
     </section>

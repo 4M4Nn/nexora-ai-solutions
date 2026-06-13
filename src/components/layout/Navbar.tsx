@@ -1,172 +1,113 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { navLinks } from "@/lib/data";
-import { cn } from "@/lib/utils";
-
-const NAV_ITEMS = navLinks.slice(0, 7);
+import { navLinks, siteConfig } from "@/lib/data";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    if (mobileOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [mobileOpen]);
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <header
-        className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-400",
-          scrolled
-            ? "bg-[#050816]/85 backdrop-blur-2xl border-b border-white/[0.05] py-3"
-            : "bg-transparent py-5"
-        )}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="group flex items-center gap-0.5">
-              <span className="font-heading font-bold text-xl tracking-tight">
-                <span className="text-white group-hover:text-[#00D4FF] transition-colors duration-200">
-                  NEXORA
-                </span>
-                <span
-                  className="inline-block w-1.5 h-1.5 rounded-full bg-[#00D4FF] ml-0.5 mb-2 group-hover:scale-150 transition-transform duration-200"
-                  style={{ boxShadow: "0 0 6px #00D4FF" }}
-                />
-              </span>
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-6 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="font-bold text-lg tracking-widest text-white" style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>
+          NEXORA
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide"
+            >
+              {link.label}
             </Link>
+          ))}
+        </nav>
 
-            {/* Desktop nav */}
-            <div className="hidden lg:flex items-center gap-0.5">
-              {NAV_ITEMS.map((link) => {
-                const active = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "relative px-4 py-2 text-sm font-medium transition-colors duration-200 group",
-                      active ? "text-[#00D4FF]" : "text-[#B7C0D1] hover:text-white"
-                    )}
-                  >
-                    {link.label}
-                    <span
-                      className={cn(
-                        "absolute bottom-1 left-4 right-4 h-px bg-[#00D4FF] transition-transform duration-200 origin-left",
-                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                      )}
-                    />
-                  </Link>
-                );
-              })}
-            </div>
+        {/* CTA + hamburger */}
+        <div className="flex items-center gap-4">
+          <Link
+            href="#contact"
+            className="hidden md:inline-flex text-xs text-white border border-white/30 px-4 py-2 hover:bg-white hover:text-black transition-all duration-200 tracking-wider"
+          >
+            Book Consultation
+          </Link>
 
-            {/* CTA + hamburger */}
-            <div className="flex items-center gap-3">
-              <Link
-                href="/contact"
-                className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-[#00D4FF] border border-[#00D4FF]/40 hover:bg-[#00D4FF]/10 hover:border-[#00D4FF]/80 transition-all duration-200"
-                style={{ boxShadow: "0 0 15px rgba(0,212,255,0.1)" }}
-              >
-                Book Consultation
-              </Link>
-
-              <button
-                onClick={() => setMobileOpen(true)}
-                className="lg:hidden p-2 text-[#B7C0D1] hover:text-white transition-colors"
-                aria-label="Open menu"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-            </div>
-          </nav>
+          <button
+            className="md:hidden flex flex-col gap-1.5 p-1"
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+          >
+            <span className="block w-6 h-px bg-white" />
+            <span className="block w-4 h-px bg-white" />
+          </button>
         </div>
       </header>
 
-      {/* Mobile full-screen overlay */}
+      {/* Mobile fullscreen overlay */}
       <AnimatePresence>
-        {mobileOpen && (
+        {open && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[60] bg-[#050816] flex flex-col"
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[100] bg-black flex flex-col px-8 py-8"
           >
-            {/* Top bar */}
-            <div className="flex items-center justify-between px-4 py-5">
-              <Link href="/" onClick={() => setMobileOpen(false)}>
-                <span className="font-heading font-bold text-xl">
-                  <span className="text-white">NEXORA</span>
-                  <span
-                    className="inline-block w-1.5 h-1.5 rounded-full bg-[#00D4FF] ml-0.5 mb-2"
-                    style={{ boxShadow: "0 0 6px #00D4FF" }}
-                  />
-                </span>
-              </Link>
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="p-2 text-[#B7C0D1] hover:text-white"
-              >
-                <X className="w-6 h-6" />
+            {/* Close */}
+            <div className="flex items-center justify-between mb-16">
+              <span className="font-bold text-lg tracking-widest" style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>
+                NEXORA
+              </span>
+              <button onClick={() => setOpen(false)} className="text-white/60 hover:text-white text-2xl leading-none">
+                ✕
               </button>
             </div>
 
-            {/* Nav links */}
-            <div className="flex-1 flex flex-col justify-center px-8 gap-2">
+            {/* Links */}
+            <nav className="flex flex-col gap-6">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ delay: i * 0.04 + 0.05 }}
+                  initial={{ x: -24, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.06, duration: 0.4, ease: "easeOut" }}
                 >
                   <Link
                     href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "block py-3 text-2xl font-heading font-semibold transition-colors duration-200 border-b border-white/5",
-                      pathname === link.href
-                        ? "text-[#00D4FF]"
-                        : "text-[#B7C0D1] hover:text-white"
-                    )}
+                    onClick={() => setOpen(false)}
+                    className="text-4xl font-bold text-white/80 hover:text-white transition-colors"
+                    style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
                   >
                     {link.label}
                   </Link>
                 </motion.div>
               ))}
-            </div>
 
-            {/* Bottom CTA */}
-            <div className="px-8 pb-10">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
+                initial={{ x: -24, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: navLinks.length * 0.06, duration: 0.4 }}
               >
-                <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                  <button className="w-full py-4 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#6E44FF] text-white font-semibold text-lg">
-                    Book Free Consultation
-                  </button>
+                <Link
+                  href="#contact"
+                  onClick={() => setOpen(false)}
+                  className="text-4xl font-bold text-white/80 hover:text-white transition-colors"
+                  style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
+                >
+                  Contact
                 </Link>
               </motion.div>
+            </nav>
+
+            <div className="mt-auto pt-12 border-t border-white/10">
+              <p className="text-white/30 text-sm">{siteConfig.email}</p>
+              <p className="text-white/30 text-sm mt-1">+91 {siteConfig.phone}</p>
             </div>
           </motion.div>
         )}

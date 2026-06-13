@@ -1,95 +1,93 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { gsap } from "gsap";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
-interface LoadingScreenProps {
+interface Props {
   onComplete: () => void;
 }
 
-export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
+const LETTERS = "NEXORA".split("");
+
+export default function LoadingScreen({ onComplete }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const letters = "NEXORA".split("");
+  const countRef = useRef<HTMLSpanElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prog = { value: 0 };
-    const tl = gsap.timeline();
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
+      const obj = { val: 0 };
 
-    tl.fromTo(
-      ".nexora-letter",
-      { opacity: 0, y: 30, rotateX: -90 },
-      {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        stagger: 0.09,
-        duration: 0.5,
-        ease: "back.out(1.7)",
-      }
-    )
-      .fromTo(
-        ".loading-tagline",
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.4 },
-        "-=0.2"
-      )
-      .to(
-        prog,
+      tl.to(
+        obj,
         {
-          value: 100,
-          duration: 1.6,
-          ease: "power2.inOut",
-          onUpdate: () => setProgress(Math.round(prog.value)),
+          val: 100,
+          duration: 2.2,
+          ease: "power1.inOut",
+          onUpdate: () => {
+            if (countRef.current) {
+              countRef.current.textContent = `${Math.round(obj.val)}%`;
+            }
+          },
         },
-        "-=0.4"
-      )
-      .to(containerRef.current, {
-        opacity: 0,
-        duration: 0.45,
-        ease: "power2.inOut",
-        delay: 0.1,
-        onComplete: onComplete,
-      });
+        0
+      );
 
-    return () => { tl.kill(); };
+      tl.to(
+        progressRef.current,
+        { scaleX: 1, duration: 2.2, ease: "power1.inOut" },
+        0
+      );
+
+      tl.from(
+        ".loader-letter",
+        { y: 32, opacity: 0, stagger: 0.07, duration: 0.5, ease: "power3.out" },
+        0.5
+      );
+
+      tl.to(containerRef.current, {
+        opacity: 0,
+        duration: 0.5,
+        delay: 0.15,
+        onComplete,
+      });
+    });
+
+    return () => ctx.revert();
   }, [onComplete]);
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[99999] bg-[#050816] flex flex-col items-center justify-center"
-      style={{ perspective: "800px" }}
+      className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center"
     >
-      {/* Top radial glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#00D4FF]/6 rounded-full blur-[100px] pointer-events-none" />
-
-      {/* Letters */}
-      <div className="flex gap-1 sm:gap-2 mb-3">
-        {letters.map((l, i) => (
-          <span
-            key={i}
-            className="nexora-letter inline-block font-heading font-bold text-5xl sm:text-7xl tracking-widest gradient-text-primary opacity-0"
-            style={{ transformOrigin: "50% 50%" }}
-          >
-            {l}
-          </span>
-        ))}
+      <div className="overflow-hidden mb-6">
+        <div className="flex items-center gap-1">
+          {LETTERS.map((l, i) => (
+            <span
+              key={i}
+              className="loader-letter inline-block text-5xl font-bold tracking-[0.3em] text-white"
+              style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
+            >
+              {l}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <p className="loading-tagline text-[#B7C0D1] text-sm tracking-[0.25em] uppercase mb-10 opacity-0">
-        AI Solutions
-      </p>
+      <span
+        ref={countRef}
+        className="text-sm text-white/30 font-mono tracking-widest"
+      >
+        0%
+      </span>
 
-      {/* Progress bar */}
-      <div className="w-48 h-px bg-white/10 relative overflow-hidden rounded-full">
+      <div className="absolute bottom-0 left-0 w-full h-px bg-white/10">
         <div
-          className="absolute left-0 top-0 h-full rounded-full transition-none"
-          style={{
-            width: `${progress}%`,
-            background: "linear-gradient(90deg, #00D4FF, #6E44FF)",
-            boxShadow: "0 0 8px rgba(0,212,255,0.6)",
-          }}
+          ref={progressRef}
+          className="h-full bg-white"
+          style={{ transformOrigin: "left", transform: "scaleX(0)" }}
         />
       </div>
     </div>
