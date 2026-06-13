@@ -117,3 +117,44 @@ body {
 .animate-glow-pulse {
   animation: glowPulse 3s ease-in-out infinite;
 }
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-text-animated {
+  background: linear-gradient(135deg, #00d4ff, #6e44ff, #00ffb2, #00d4ff);
+  background-size: 300% 300%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes wordFade {
+  0% { opacity: 0; transform: translateY(12px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-12px); }
+}
+
+.word-cycle {
+  animation: wordFade 2.8s ease-in-out infinite;
+}
+
+.shadow-glow-primary {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+}
+
+.shadow-glow-secondary {
+  box-shadow: 0 0 30px rgba(110, 68, 255, 0.2);
+}
+
+.glassmorphism {
+  background: rgba(13, 18, 36, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import ServicesSection from "@/components/sections/ServicesSection";
+import NeuralNetworkSection from "@/components/sections/NeuralNetworkSection";
 import WhyNexoraSection from "@/components/sections/WhyNexoraSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import IndustriesSection from "@/components/sections/IndustriesSection";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CTASection from "@/components/sections/CTASection";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function HomePage() {
     <>
       <Hero />
       <ServicesSection limit={6} showCTA />
+      <NeuralNetworkSection />
       <WhyNexoraSection />
       <HowItWorksSection />
       <IndustriesSection />

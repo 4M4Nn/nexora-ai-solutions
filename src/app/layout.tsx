@@ -3,6 +3,8 @@ import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LenisProvider from "@/components/effects/LenisProvider";
+import ParticleBackground from "@/components/effects/ParticleBackground";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -74,9 +76,12 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} dark`}
     >
       <body className="bg-[#050816] text-white font-body min-h-screen flex flex-col antialiased">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <LenisProvider>
+          <ParticleBackground />
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </LenisProvider>
       </body>
     </html>
   );
