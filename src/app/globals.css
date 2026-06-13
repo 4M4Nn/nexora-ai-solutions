@@ -1,44 +1,68 @@
 @import "tailwindcss";
 
 @theme {
-  --font-heading: var(--font-space-grotesk), sans-serif;
-  --font-body: var(--font-inter), sans-serif;
+  --font-heading: var(--font-syne), sans-serif;
+  --font-sub: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-dm-sans), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
 :root {
   --cyan: #00d4ff;
   --green: #00ffb2;
   --purple: #6e44ff;
+  --bg-primary: #0A0F1E;
+  --bg-secondary: #0F1628;
+  --bg-accent: #111827;
+  --text-heading: #ffffff;
+  --text-body: #CBD5E1;
+  --text-sub: #94A3B8;
+  --border: rgba(255,255,255,0.12);
+  --border-accent: rgba(0,212,255,0.2);
 }
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  scroll-behavior: auto;
-}
+html { scroll-behavior: auto; }
 
 body {
-  background: #000000;
-  color: #ffffff;
+  background: #0A0F1E;
+  color: #CBD5E1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-syne), sans-serif;
+  color: #ffffff;
 }
 
 /* Custom cursor — hide default on desktop */
 @media (hover: hover) and (pointer: fine) {
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
+  *, *::before, *::after { cursor: none !important; }
+}
+
+/* ── Section divider ── */
+.section-divider {
+  height: 1px;
+  background: rgba(0, 212, 255, 0.1);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ── Section label (/ 01 style) ── */
+.section-label {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0, 212, 255, 0.45);
 }
 
 /* ── Ticker ── */
@@ -46,14 +70,12 @@ body {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-
 .ticker-track {
   display: flex;
   width: max-content;
   animation: ticker 36s linear infinite;
   will-change: transform;
 }
-
 .ticker-track:hover { animation-play-state: paused; }
 
 /* ── Marquee ── */
@@ -65,7 +87,6 @@ body {
   from { transform: translateX(-50%); }
   to   { transform: translateX(0); }
 }
-
 .marquee-left {
   display: flex;
   width: max-content;
@@ -76,23 +97,21 @@ body {
   width: max-content;
   animation: marquee-right 28s linear infinite;
 }
-.marquee-left:hover,
-.marquee-right:hover { animation-play-state: paused; }
+.marquee-left:hover, .marquee-right:hover { animation-play-state: paused; }
 
 /* ── Grain overlay ── */
 @keyframes grain {
   0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-5%, -5%); }
-  20% { transform: translate(-10%, 5%); }
-  30% { transform: translate(5%, -10%); }
-  40% { transform: translate(-5%, 15%); }
-  50% { transform: translate(-10%, 5%); }
-  60% { transform: translate(15%, 0); }
-  70% { transform: translate(0, 10%); }
-  80% { transform: translate(-15%, 0); }
-  90% { transform: translate(10%, 5%); }
+  10%  { transform: translate(-5%, -5%); }
+  20%  { transform: translate(-10%, 5%); }
+  30%  { transform: translate(5%, -10%); }
+  40%  { transform: translate(-5%, 15%); }
+  50%  { transform: translate(-10%, 5%); }
+  60%  { transform: translate(15%, 0); }
+  70%  { transform: translate(0, 10%); }
+  80%  { transform: translate(-15%, 0); }
+  90%  { transform: translate(10%, 5%); }
 }
-
 .grain-overlay::after {
   content: "";
   position: absolute;
@@ -111,22 +130,28 @@ body {
 /* ── Holographic grid ── */
 .holo-grid {
   background-image:
-    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
   background-size: 80px 80px;
+}
+
+/* ── Glitch animation for service number ── */
+@keyframes glitch-shift {
+  0%,100% { clip-path: inset(0 0 95% 0); transform: translate(-2px,0); }
+  25%      { clip-path: inset(30% 0 50% 0); transform: translate(2px,0); }
+  50%      { clip-path: inset(60% 0 20% 0); transform: translate(-1px,0); }
+  75%      { clip-path: inset(80% 0 5% 0); transform: translate(1px,0); }
 }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #333; }
+::-webkit-scrollbar-track { background: #0A0F1E; }
+::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #2d3e56; }
 
 /* ── Selection ── */
-::selection { background: rgba(0, 212, 255, 0.18); color: #fff; }
+::selection { background: rgba(0,212,255,0.18); color: #fff; }
 
-/* ── Glow pulse animation for 3D loading fallback ── */
-@keyframes spin-ring {
-  to { transform: rotate(360deg); }
-}
+/* ── Spin ring ── */
+@keyframes spin-ring { to { transform: rotate(360deg); } }
 .spin-ring { animation: spin-ring 1s linear infinite; }

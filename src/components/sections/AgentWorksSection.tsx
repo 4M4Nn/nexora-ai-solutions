@@ -10,10 +10,10 @@ const AgentBrain = dynamic(() => import("@/components/3d/AgentBrain"), {
 });
 
 const STEPS = [
-  { num: "01", title: "Receives your business request", desc: "Any channel — WhatsApp, email, website, or CRM." },
-  { num: "02", title: "Analyzes context and requirements", desc: "NOVA reads intent, extracts data, and maps the task." },
-  { num: "03", title: "Executes the task autonomously", desc: "No human needed. Actions happen in real time." },
-  { num: "04", title: "Reports results and learns", desc: "Every output improves the next. Continuous intelligence." },
+  { label: "Input", desc: "Your business data, rules, and workflows enter the system." },
+  { label: "Processing", desc: "NOVA analyzes, classifies, and makes intelligent decisions in real time." },
+  { label: "Decisions", desc: "The agent selects the optimal action based on your defined goals." },
+  { label: "Output", desc: "Instant automated response — call booked, lead qualified, ticket resolved." },
 ];
 
 export default function AgentWorksSection() {
@@ -21,82 +21,69 @@ export default function AgentWorksSection() {
   const inView = useInView(ref, { once: true, margin: "-10% 0px" });
 
   return (
-    <section ref={ref} className="bg-black py-28 px-6 md:px-10">
+    <section
+      ref={ref}
+      className="py-28 px-6 md:px-10"
+      style={{ background: "radial-gradient(ellipse at top right, #1a2744 0%, #0A0F1E 60%)" }}
+    >
+      <div className="section-divider mb-20" />
       <div className="max-w-7xl mx-auto">
-        <div className="mb-16">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="text-xs text-[#00D4FF] tracking-[0.28em] uppercase mb-4"
-          >
-            Under The Hood
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="font-bold text-white"
-            style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 1 }}
-          >
-            Watch your AI agent think.
-          </motion.h2>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              className="section-label mb-5"
+            >
+              / 02 &nbsp;·&nbsp; How NOVA Thinks
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 28 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="font-black text-white leading-none mb-8"
+              style={{ fontFamily: "var(--font-syne), sans-serif", fontSize: "clamp(36px, 5vw, 68px)" }}
+            >
+              AI that thinks,
+              <br />
+              decides, and acts.
+            </motion.h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* 3D scene */}
+            <div className="space-y-6">
+              {STEPS.map((step, i) => (
+                <motion.div
+                  key={step.label}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                  className="flex gap-4"
+                >
+                  <div
+                    className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center border"
+                    style={{ borderColor: "rgba(0,212,255,0.3)", backgroundColor: "rgba(0,212,255,0.06)" }}
+                  >
+                    <span className="section-label" style={{ fontSize: 9 }}>{String(i + 1).padStart(2, "0")}</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white mb-1" style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>{step.label}</p>
+                    <p className="text-[#94A3B8] text-sm leading-relaxed">{step.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="h-[420px] border border-white/6"
+            transition={{ duration: 1, delay: 0.2 }}
+            className="h-[380px] md:h-[440px] w-full"
           >
             <AgentBrain />
           </motion.div>
-
-          {/* Steps */}
-          <div className="space-y-0">
-            {STEPS.map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 24 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-                className="flex gap-6 py-7 border-b border-white/8"
-              >
-                <span className="text-xs text-[#00D4FF] tracking-widest shrink-0 pt-0.5">{step.num}</span>
-                <div>
-                  <p className="font-semibold text-white text-sm md:text-base mb-1.5"
-                     style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}>
-                    {step.title}
-                  </p>
-                  <p className="text-white/35 text-sm">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
-
-        {/* Node labels legend */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="mt-10 flex flex-wrap gap-6 pt-8 border-t border-white/8"
-        >
-          {[
-            { color: "#00FFB2", label: "Client Request" },
-            { color: "#00D4FF", label: "NOVA AI Core" },
-            { color: "#6E44FF", label: "Decision Layer" },
-            { color: "#4488FF", label: "Action Output" },
-          ].map(({ color, label }) => (
-            <div key={label} className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-              <span className="text-xs text-white/35 tracking-wide">{label}</span>
-            </div>
-          ))}
-        </motion.div>
       </div>
+      <div className="section-divider mt-20" />
     </section>
   );
 }

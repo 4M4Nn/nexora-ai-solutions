@@ -26,33 +26,34 @@ export default function MetricsSection() {
         });
       });
     }, ref);
-    return () => ctx.revert();
+    return () => { ctx.revert(); };
   }, []);
 
   return (
-    <section ref={ref} className="bg-black">
-      <div className="border-t border-white/8 max-w-7xl mx-auto" />
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section ref={ref} style={{ background: "#0F1628" }}>
+      <div className="section-divider" />
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-4">
+        <p className="section-label py-10">/ 07 &nbsp;·&nbsp; Impact</p>
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {metrics.map((m, i) => (
             <div
               key={m.label}
-              className="py-16 text-center"
-              style={{ borderRight: i < metrics.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none" }}
+              className="py-14 text-center"
+              style={{ borderRight: i < metrics.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none" }}
             >
               <p
-                className="font-bold text-white leading-none mb-3"
-                style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontSize: "clamp(44px, 6vw, 80px)" }}
+                className="font-black text-white leading-none mb-2"
+                style={{ fontFamily: "var(--font-syne), sans-serif", fontSize: "clamp(44px, 6vw, 84px)" }}
               >
                 <span ref={(el) => { valRefs.current[i] = el; }}>{m.display}</span>
               </p>
-              <p className="text-white/30 text-xs tracking-widest uppercase">{m.label}</p>
-              <p className="text-white/20 text-xs tracking-widest uppercase">{m.sublabel}</p>
+              <p className="section-label">{m.label}</p>
+              <p className="section-label" style={{ opacity: 0.5 }}>{m.sublabel}</p>
             </div>
           ))}
         </div>
       </div>
-      <div className="border-b border-white/8 max-w-7xl mx-auto" />
+      <div className="section-divider" />
     </section>
   );
 }

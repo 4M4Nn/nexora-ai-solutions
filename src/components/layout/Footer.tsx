@@ -28,25 +28,22 @@ function WhatsAppSVG() {
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-white/8 px-6 md:px-10 py-10 bg-black">
+    <footer className="px-6 md:px-10 py-10" style={{ background: "#080D1A", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
         <div>
-          <span
-            className="font-bold text-lg tracking-[0.2em] text-white block mb-1"
-            style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
-          >
+          <span className="font-black text-lg tracking-[0.18em] text-white block mb-1" style={{ fontFamily: "var(--font-syne), sans-serif" }}>
             NEXORA
           </span>
-          <p className="text-white/25 text-xs">{siteConfig.tagline}</p>
+          <p className="text-[#94A3B8] text-xs" style={{ fontFamily: "var(--font-jetbrains-mono), monospace", letterSpacing: "0.12em" }}>{siteConfig.tagline}</p>
         </div>
 
         <nav className="flex flex-wrap justify-center gap-6 md:gap-8">
           {navLinks.map((l) => (
-            <Link key={l.href} href={l.href} className="text-xs text-white/35 hover:text-white transition-colors tracking-wide">
+            <Link key={l.href} href={l.href} className="text-xs tracking-wide transition-colors" style={{ fontFamily: "var(--font-space-grotesk), sans-serif", color: "#94A3B8" }}>
               {l.label}
             </Link>
           ))}
-          <Link href="#contact" className="text-xs text-white/35 hover:text-white transition-colors tracking-wide">Contact</Link>
+          <Link href="#contact" className="text-xs tracking-wide transition-colors" style={{ fontFamily: "var(--font-space-grotesk), sans-serif", color: "#94A3B8" }}>Contact</Link>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -56,19 +53,19 @@ export default function Footer() {
             { href: `https://wa.me/${siteConfig.whatsapp}`, label: "WhatsApp", Icon: WhatsAppSVG },
           ].map(({ href, label, Icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-              className="text-white/30 hover:text-white transition-colors">
+              className="transition-colors" style={{ color: "#94A3B8" }}>
               <Icon />
             </a>
           ))}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto h-px bg-white/8 mb-6" />
+      <div className="max-w-7xl mx-auto h-px mb-6" style={{ backgroundColor: "rgba(255,255,255,0.07)" }} />
 
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p className="text-white/25 text-xs">&copy; {year} Nexora AI Solutions. All rights reserved.</p>
-        <p className="text-white/25 text-xs">
-          Built by <span className="text-white/40">Loopgen Technologies</span>
+        <p className="text-xs" style={{ color: "#94A3B8", fontFamily: "var(--font-jetbrains-mono), monospace" }}>&copy; {year} Nexora AI Solutions. All rights reserved.</p>
+        <p className="text-xs" style={{ color: "#94A3B8", fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+          Built by <span style={{ color: "#CBD5E1" }}>Loopgen Technologies</span>
         </p>
       </div>
     </footer>
