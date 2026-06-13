@@ -1,120 +1,149 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { Search, Brain, Code2, Rocket, BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { workSteps } from "@/lib/data";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  Search, Brain, Code2, Rocket, BarChart3,
+const ICONS: Record<number, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  1: Search, 2: Brain, 3: Code2, 4: Rocket, 5: BarChart3,
 };
-
-const stepColors = ["#00D4FF", "#6E44FF", "#00FFB2", "#00D4FF", "#6E44FF"];
+const COLORS = ["#00D4FF", "#6E44FF", "#00FFB2", "#00D4FF", "#6E44FF"];
 
 export default function HowItWorksSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const trackCount = workSteps.length - 1;
+  const x = useTransform(scrollYProgress, [0, 1], ["0vw", `-${trackCount * 100}vw`]);
+  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setActiveStep(Math.min(workSteps.length - 1, Math.round(v * trackCount)));
+  });
+
   return (
-    <section className="relative py-20 lg:py-28 bg-[#050816] overflow-hidden">
-      <div className="orb w-96 h-96 bg-[#6E44FF]/12 bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <Badge className="mb-4 bg-[#00FFB2]/10 text-[#00FFB2] border-[#00FFB2]/20">
-            Our Process
+    <section
+      ref={containerRef}
+      className="relative bg-[#050816]"
+      style={{ height: `${workSteps.length * 100}vh` }}
+    >
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="shrink-0 pt-16 pb-4 text-center px-4">
+          <Badge className="mb-3 bg-[#00FFB2]/10 text-[#00FFB2] border-[#00FFB2]/20">
+            How It Works
           </Badge>
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-4">
-            How We{" "}
-            <span className="gradient-text-primary">Build Your AI</span>
+          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white">
+            From Idea to{" "}
+            <span className="gradient-text-animated">AI in 5 Steps</span>
           </h2>
-          <p className="text-[#B7C0D1] text-lg max-w-2xl mx-auto">
-            A proven 5-step framework to go from business requirement to live AI system — fast, reliable, and results-focused.
-          </p>
-        </motion.div>
 
-        {/* Steps */}
-        <div className="relative">
-          {/* Connector line */}
-          <div className="hidden lg:block absolute top-16 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-[#00D4FF]/20 via-[#6E44FF]/40 to-[#00FFB2]/20" />
+          {/* Step dots */}
+          <div className="flex items-center justify-center gap-2 mt-5">
+            {workSteps.map((_, i) => (
+              <div
+                key={i}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === activeStep ? "24px" : "6px",
+                  height: "6px",
+                  backgroundColor: i === activeStep ? COLORS[i] : "rgba(255,255,255,0.2)",
+                  boxShadow: i === activeStep ? `0 0 8px ${COLORS[i]}` : "none",
+                }}
+              />
+            ))}
+          </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4">
-            {workSteps.map((step, index) => {
-              const Icon = iconMap[step.icon] ?? Rocket;
-              const color = stepColors[index];
-              return (
+        {/* Cards track */}
+        <motion.div style={{ x }} className="flex flex-1 will-change-transform">
+          {workSteps.map((step, i) => {
+            const Icon = ICONS[step.step] ?? Search;
+            const color = COLORS[i];
+            const isActive = activeStep === i;
+
+            return (
+              <div
+                key={step.step}
+                className="w-screen shrink-0 flex items-center justify-center px-4 sm:px-12 lg:px-24"
+              >
                 <motion.div
-                  key={step.step}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative flex flex-col items-center text-center"
+                  animate={{
+                    opacity: isActive ? 1 : 0.4,
+                    scale: isActive ? 1 : 0.93,
+                  }}
+                  transition={{ duration: 0.45 }}
+                  className="max-w-2xl w-full glass rounded-3xl p-8 sm:p-12"
+                  style={{
+                    border: `1px solid ${isActive ? color + "40" : "rgba(255,255,255,0.04)"}`,
+                    boxShadow: isActive
+                      ? `0 0 60px ${color}12, 0 30px 80px rgba(0,0,0,0.4)`
+                      : "0 4px 24px rgba(0,0,0,0.3)",
+                  }}
                 >
-                  {/* Step number + icon */}
-                  <div className="relative mb-5">
+                  <div className="flex items-center gap-5 mb-8">
                     <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10 transition-transform duration-300 hover:scale-110"
+                      className="font-heading font-bold text-7xl sm:text-8xl leading-none tabular-nums"
+                      style={{ color: isActive ? color : "rgba(255,255,255,0.08)" }}
+                    >
+                      {String(step.step).padStart(2, "0")}
+                    </div>
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
                       style={{
-                        background: `linear-gradient(135deg, ${color}20, ${color}10)`,
-                        border: `1px solid ${color}40`,
+                        backgroundColor: `${color}18`,
+                        border: `1px solid ${color}35`,
+                        boxShadow: isActive ? `0 0 20px ${color}25` : "none",
                       }}
                     >
                       <Icon className="w-7 h-7" style={{ color }} />
                     </div>
-                    {/* Step number badge */}
-                    <div
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white z-20"
-                      style={{ background: `linear-gradient(135deg, ${color}, ${color}99)` }}
-                    >
-                      {step.step}
-                    </div>
-                    {/* Glow */}
-                    <div
-                      className="absolute inset-0 rounded-2xl blur-xl opacity-30"
-                      style={{ backgroundColor: color }}
-                    />
                   </div>
 
-                  <h3 className="font-heading font-semibold text-lg text-white mb-2">
+                  <h3
+                    className="font-heading font-bold text-3xl sm:text-4xl mb-4"
+                    style={{ color: isActive ? "white" : "#B7C0D1" }}
+                  >
                     {step.title}
                   </h3>
-                  <p className="text-[#B7C0D1] text-sm leading-relaxed">
-                    {step.description}
-                  </p>
+                  <p className="text-[#B7C0D1] text-lg leading-relaxed">{step.description}</p>
+
+                  {isActive && (
+                    <div className="mt-8 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: color }} />
+                      <span className="text-sm font-medium" style={{ color }}>
+                        Step {step.step} of {workSteps.length}
+                      </span>
+                    </div>
+                  )}
                 </motion.div>
-              );
-            })}
+              </div>
+            );
+          })}
+        </motion.div>
+
+        {/* Progress bar */}
+        <div className="shrink-0 px-8 pb-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="h-px bg-white/8 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{
+                  width: progressWidth,
+                  background: "linear-gradient(90deg, #00D4FF, #6E44FF)",
+                  boxShadow: "0 0 10px rgba(0,212,255,0.6)",
+                }}
+              />
+            </div>
           </div>
         </div>
-
-        {/* Timeline mobile view */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-16 glass rounded-2xl p-6 sm:p-8 text-center"
-        >
-          <p className="text-[#B7C0D1] text-base mb-2">
-            <span className="text-white font-semibold">Average time to deployment:</span>
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-4">
-            {[
-              { type: "AI Website", time: "24 Hours" },
-              { type: "AI Agent", time: "5–7 Days" },
-              { type: "Custom System", time: "2–4 Weeks" },
-            ].map((item) => (
-              <div key={item.type} className="text-center">
-                <div className="font-heading font-bold text-2xl gradient-text-primary">{item.time}</div>
-                <div className="text-[#B7C0D1] text-sm">{item.type}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );

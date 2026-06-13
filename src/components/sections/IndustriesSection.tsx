@@ -1,102 +1,108 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Heart, BookOpen, Building2, Scissors, UtensilsCrossed,
-  HardHat, TrendingUp, Car, ShoppingCart, Plane,
-} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { industries } from "@/lib/data";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
-  Heart, BookOpen, Building2, Scissors, UtensilsCrossed,
-  HardHat, TrendingUp, Car, ShoppingCart, Plane,
+const EMOJIS: Record<string, string> = {
+  healthcare:   "🏥",
+  education:    "🎓",
+  "real-estate":"🏗️",
+  salons:       "💇",
+  restaurants:  "🍽️",
+  construction: "🏛️",
+  finance:      "💰",
+  automotive:   "🚗",
+  ecommerce:    "🛒",
+  tourism:      "✈️",
 };
 
-const colors = [
-  "#00D4FF", "#6E44FF", "#00FFB2", "#00D4FF", "#6E44FF",
-  "#00FFB2", "#00D4FF", "#6E44FF", "#00FFB2", "#00D4FF",
-];
+const COLORS = ["#00D4FF", "#6E44FF", "#00FFB2"];
+
+function IndustryCard({ ind, i }: { ind: typeof industries[0]; i: number }) {
+  const color = COLORS[i % COLORS.length];
+  const emoji = EMOJIS[ind.id] ?? "🤖";
+
+  return (
+    <div
+      className="shrink-0 group glass rounded-2xl px-5 py-4 flex items-center gap-4 mx-2 transition-all duration-300 hover:scale-105"
+      style={{
+        border: `1px solid rgba(255,255,255,0.05)`,
+        minWidth: "220px",
+      }}
+    >
+      <span className="text-3xl">{emoji}</span>
+      <div>
+        <p className="font-heading font-semibold text-white text-sm group-hover:text-[#00D4FF] transition-colors">
+          {ind.name}
+        </p>
+        <p className="text-xs mt-0.5 font-medium px-2 py-0.5 rounded-full inline-block"
+          style={{ backgroundColor: `${color}15`, color }}
+        >
+          AI Solutions
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function IndustriesSection() {
+  const row1 = [...industries, ...industries];
+  const row2 = [...industries.slice(5), ...industries, ...industries.slice(0, 5)];
+
   return (
     <section className="relative py-20 lg:py-28 bg-[#050816] overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-20" />
-      <div className="orb w-80 h-80 bg-[#00D4FF]/8 top-0 left-1/2 -translate-x-1/2" />
+      <div className="orb w-72 h-72 bg-[#00D4FF]/8 top-1/2 left-0 -translate-x-1/2 -translate-y-1/2" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center"
         >
-          <Badge className="mb-4 bg-[#6E44FF]/10 text-[#6E44FF] border-[#6E44FF]/20">
-            Industries We Serve
+          <Badge className="mb-4 bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20">
+            Industries
           </Badge>
           <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white mb-4">
             AI for Every{" "}
-            <span className="gradient-text-accent">Industry</span>
+            <span className="gradient-text-animated">Industry</span>
           </h2>
           <p className="text-[#B7C0D1] text-lg max-w-2xl mx-auto">
-            We deploy AI solutions tailored to the unique workflows and customer journeys of each sector.
+            No matter your sector — we&apos;ve built AI solutions that deliver real results.
           </p>
         </motion.div>
+      </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {industries.map((industry, index) => {
-            const Icon = iconMap[industry.icon] ?? TrendingUp;
-            const color = colors[index % colors.length];
-            return (
-              <motion.div
-                key={industry.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                whileHover={{ y: -4 }}
-                className="group relative bg-[#0D1224] border border-[#1A2340] hover:border-opacity-60 rounded-2xl p-5 text-center cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-                style={{
-                  borderColor: `rgba(26,35,64,0.8)`,
-                }}
-              >
-                <div
-                  className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                  style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}
-                >
-                  <Icon className="w-6 h-6" style={{ color }} />
-                </div>
-                <h3 className="font-heading font-semibold text-sm text-white mb-2">
-                  {industry.name}
-                </h3>
-                <p className="text-[#B7C0D1] text-xs leading-relaxed line-clamp-2">
-                  {industry.description}
-                </p>
-
-                {/* Hover solutions tooltip */}
-                <div className="absolute inset-x-0 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 px-2">
-                  <div className="glass rounded-lg p-3 text-left">
-                    <p className="text-xs font-semibold text-white mb-1.5">Solutions:</p>
-                    {industry.solutions.map((sol) => (
-                      <p key={sol} className="text-xs text-[#B7C0D1] flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                        {sol}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hover glow overlay */}
-                <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at center, ${color}08, transparent 70%)` }}
-                />
-              </motion.div>
-            );
-          })}
+      {/* Row 1 — scrolls left */}
+      <div className="overflow-hidden mb-4">
+        <div className="marquee-left flex">
+          {row1.map((ind, i) => <IndustryCard key={`r1-${ind.id}-${i}`} ind={ind} i={i} />)}
         </div>
       </div>
+
+      {/* Row 2 — scrolls right */}
+      <div className="overflow-hidden">
+        <div className="marquee-right flex">
+          {row2.map((ind, i) => <IndustryCard key={`r2-${ind.id}-${i}`} ind={ind} i={i + 3} />)}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-center mt-12"
+      >
+        <a
+          href="/industries"
+          className="inline-flex items-center gap-2 text-[#00D4FF] border border-[#00D4FF]/30 hover:bg-[#00D4FF]/10 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+        >
+          See All Industries
+        </a>
+      </motion.div>
     </section>
   );
 }

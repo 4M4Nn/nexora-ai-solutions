@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LenisProvider from "@/components/effects/LenisProvider";
-import ParticleBackground from "@/components/effects/ParticleBackground";
+import SiteShell from "@/components/effects/SiteShell";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -71,16 +71,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable} dark`}
-    >
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} dark`}>
       <body className="bg-[#050816] text-white font-body min-h-screen flex flex-col antialiased">
         <LenisProvider>
-          <ParticleBackground />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <SiteShell>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </SiteShell>
         </LenisProvider>
       </body>
     </html>

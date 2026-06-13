@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
+import Ticker from "@/components/sections/Ticker";
 import ServicesSection from "@/components/sections/ServicesSection";
 import NeuralNetworkSection from "@/components/sections/NeuralNetworkSection";
-import WhyNexoraSection from "@/components/sections/WhyNexoraSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import IndustriesSection from "@/components/sections/IndustriesSection";
+import WhyNexoraSection from "@/components/sections/WhyNexoraSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import FAQSection from "@/components/sections/FAQSection";
 import CTASection from "@/components/sections/CTASection";
+import ContactSection from "@/components/sections/ContactSection";
 
 export const metadata: Metadata = {
   title: "Nexora AI Solutions — AI Employees for Modern Businesses | Kochi, Kerala",
@@ -19,13 +22,16 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <ServicesSection limit={6} showCTA />
+      <Ticker />
+      <ServicesSection limit={7} showCTA />
       <NeuralNetworkSection />
-      <WhyNexoraSection />
       <HowItWorksSection />
       <IndustriesSection />
+      <WhyNexoraSection />
       <TestimonialsSection />
+      <FAQSection />
       <CTASection />
+      <ContactSection />
     </>
   );
 }
